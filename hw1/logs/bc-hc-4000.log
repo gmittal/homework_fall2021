@@ -1,0 +1,35 @@
+########################
+logging outputs to  /Users/gautam/Desktop/workbench/fa21/cs285/hw/hw1/cs285/scripts/../../data/q1_bc_halfcheetah_HalfCheetah-v2_12-09-2021_22-42-23
+########################
+GPU not detected. Defaulting to CPU.
+Loading expert policy from... cs285/policies/experts/HalfCheetah.pkl
+obs (1, 17) (1, 17)
+Done restoring expert policy...
+
+
+********** Iteration 0 ************
+
+Collecting data to be used for training...
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 4008.87060546875
+Eval_StdReturn : 105.26560974121094
+Eval_MaxReturn : 4194.423828125
+Eval_MinReturn : 3841.986572265625
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 4205.7783203125
+Train_StdReturn : 83.038818359375
+Train_MaxReturn : 4288.81689453125
+Train_MinReturn : 4122.7392578125
+Train_AverageEpLen : 1000.0
+Train_EnvstepsSoFar : 0
+TimeSinceStart : 9.355684995651245
+Training Loss : -1005.4124755859375
+Initial_DataCollection_AverageReturn : 4205.7783203125
+Done logging...
+
+

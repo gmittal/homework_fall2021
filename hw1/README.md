@@ -30,34 +30,118 @@ Tip: While debugging, you probably want to keep the flag `--video_log_freq -1` w
 If running on Colab, adjust the `#@params` in the `Args` class according to the commmand line arguments above.
 
 ### Section 1 (Behavior Cloning)
-Command for problem 1:
+To reproduce results from Section 1 (Ant-v2 and HalfCheetah-v2):
 
 ```
 python cs285/scripts/run_hw1.py \
-	--expert_policy_file cs285/policies/experts/Ant.pkl \
-	--env_name Ant-v2 --exp_name bc_ant --n_iter 1 \
-	--expert_data cs285/expert_data/expert_data_Ant-v2.pkl
-	--video_log_freq -1
+--expert_policy_file cs285/policies/experts/Ant.pkl \
+--env_name Ant-v2 --exp_name bc_ant --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_Ant-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--video_log_freq -1
+
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--video_log_freq -1
 ```
 
-Make sure to also try another environment.
-See the homework PDF for more details on what else you need to run.
-To generate videos of the policy, remove the `--video_log_freq -1` flag.
+To generate the numbers shown in the ablation for 1.3:
+```
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 125 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 250 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 500 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 1000 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 2000 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 4000 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 8000 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 16000 \
+--video_log_freq -1
+
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name bc_halfcheetah --n_iter 1 \
+--expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--num_agent_train_steps_per_iter 32000 \
+--video_log_freq -1
+```
 
 ### Section 2 (DAgger)
-Command for section 1:
-(Note the `--do_dagger` flag, and the higher value for `n_iter`)
+To reproduce results in Section 2 (for Ant-v2 and HalfCheetah-v2) run:
 
 ```
 python cs285/scripts/run_hw1.py \
-    --expert_policy_file cs285/policies/experts/Ant.pkl \
-    --env_name Ant-v2 --exp_name dagger_ant --n_iter 10 \
-    --do_dagger --expert_data cs285/expert_data/expert_data_Ant-v2.pkl \
-	--video_log_freq -1
-```
+--expert_policy_file cs285/policies/experts/Ant.pkl \
+--env_name Ant-v2 --exp_name dagger_ant --n_iter 10 \
+--do_dagger --expert_data cs285/expert_data/expert_data_Ant-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--video_log_freq -1
 
-Make sure to also try another environment.
-See the homework PDF for more details on what else you need to run.
+python cs285/scripts/run_hw1.py \
+--expert_policy_file cs285/policies/experts/HalfCheetah.pkl \
+--env_name HalfCheetah-v2 --exp_name dagger_halfcheetah --n_iter 10 \
+--do_dagger --expert_data cs285/expert_data/expert_data_HalfCheetah-v2.pkl \
+--ep_len 1000 --eval_batch_size 10000 \
+--video_log_freq -1
+```
 
 ## Visualization the saved tensorboard event file:
 

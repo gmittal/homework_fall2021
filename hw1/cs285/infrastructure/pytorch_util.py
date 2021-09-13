@@ -17,6 +17,39 @@ _str_to_activation = {
 }
 
 
+class MLP(nn.Module):
+    
+    def __init__(
+        self, 
+        input_size, 
+        hidden_size,
+        output_size, 
+        num_layers, 
+        act, 
+        output_act,
+    ):
+        super().__init__()
+        
+        self.in_layer = nn.Linear(input_size, hidden_size)
+        self.hidden = []
+        for _ in range(num_layers):
+            self.hidden.append(nn.Sequential(
+                nn.Linear(hidden_size, hidden_size),
+                act,
+            ))
+        self.out_layer = nn.Sequential(
+            nn.Linear(hidden_size, output_size),
+            output_act,
+        )
+
+    def forward(self, x):
+        x = self.in_layer(x)
+        for layer in self.hidden:
+            x = layer(x)
+        x = self.out_layer(x)
+        return x
+
+
 def build_mlp(
         input_size: int,
         output_size: int,
@@ -45,9 +78,7 @@ def build_mlp(
     if isinstance(output_activation, str):
         output_activation = _str_to_activation[output_activation]
 
-    # TODO: return a MLP. This should be an instance of nn.Module
-    # Note: nn.Sequential is an instance of nn.Module.
-    raise NotImplementedError
+    return MLP(input_size, size, output_size, n_layers, activation, output_activation)
 
 
 device = None

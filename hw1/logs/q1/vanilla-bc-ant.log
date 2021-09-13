@@ -1,0 +1,35 @@
+########################
+logging outputs to  /Users/gautam/Desktop/workbench/fa21/cs285/hw/hw1/cs285/scripts/../../data/q1_bc_ant_Ant-v2_13-09-2021_08-42-29
+########################
+GPU not detected. Defaulting to CPU.
+Loading expert policy from... cs285/policies/experts/Ant.pkl
+obs (1, 111) (1, 111)
+Done restoring expert policy...
+
+
+********** Iteration 0 ************
+
+Collecting data to be used for training...
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 4573.38818359375
+Eval_StdReturn : 108.95249938964844
+Eval_MaxReturn : 4723.1396484375
+Eval_MinReturn : 4370.2373046875
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 4713.6533203125
+Train_StdReturn : 12.196533203125
+Train_MaxReturn : 4725.849609375
+Train_MinReturn : 4701.45654296875
+Train_AverageEpLen : 1000.0
+Train_EnvstepsSoFar : 0
+TimeSinceStart : 7.686880111694336
+Training Loss : -1432.4163818359375
+Initial_DataCollection_AverageReturn : 4713.6533203125
+Done logging...
+
+

@@ -80,8 +80,14 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         else:
             observation = obs[None]
 
-        # TODO return the action that the policy prescribes
-        raise NotImplementedError
+        observation = torch.tensor(observation).to(ptu.device)
+        if self.discrete:
+            x = self.forward(observation)
+        else:
+            dist = self.forward(observation)
+            x = dist.sample()
+
+        return ptu.to_numpy(x)
 
     # update/train this policy
     def update(self, observations, actions, **kwargs):
@@ -93,8 +99,13 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
     # return more flexible objects, such as a
     # `torch.distributions.Distribution` object. It's up to you!
     def forward(self, observation: torch.FloatTensor) -> Any:
-        raise NotImplementedError
-
+        if self.discrete:
+            x = self.logits_na(observation.float())
+            return x
+        else:
+            mu = self.mean_net(observation.float())
+            std = torch.exp(self.logstd)
+            return distributions.Normal(mu, scale=std)
 
 #####################################################
 #####################################################
@@ -102,14 +113,38 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
 class MLPPolicySL(MLPPolicy):
     def __init__(self, ac_dim, ob_dim, n_layers, size, **kwargs):
         super().__init__(ac_dim, ob_dim, n_layers, size, **kwargs)
-        self.loss = nn.MSELoss()
+        
+        if self.discrete:
+            self.loss = nn.CrossEntropyLoss()
+        else:       
+            # negative log likelihood
+            self.loss = lambda dist, actions: -dist.log_prob(actions).sum()
 
     def update(
             self, observations, actions,
             adv_n=None, acs_labels_na=None, qvals=None
     ):
-        # TODO: update the policy and return the loss
-        loss = TODO
+        self.train()
+
+        # move inputs to accelerator
+        observations = torch.tensor(observations).to(ptu.device)
+        actions = torch.tensor(actions).to(ptu.device)
+
+        # compute loss
+        if self.discrete:
+            x = self.forward(observations)
+            loss = self.loss(x, actions)
+        else:
+            dist = self.forward(observations)
+            loss = self.loss(dist, actions)
+
+        # backprop
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        self.eval()
+
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
