@@ -154,10 +154,32 @@ class RL_Trainer(object):
     ####################################
 
     def collect_training_trajectories(self, itr, initial_expertdata, collect_policy, batch_size):
-        # TODO: GETTHIS from HW1
+        print("\nCollecting data to be used for training...")
+        
+        if itr == 0:
+            with open(load_initial_expertdata, 'rb') as f:
+                loaded_paths = np.load(f, allow_pickle=True)
+                return loaded_paths, 0, None
+        
+        paths, envsteps_this_batch = utils.sample_trajectories(self.env, collect_policy, self.params['ep_len'], MAX_VIDEO_LEN)
+
+        # collect more rollouts with the same policy, to be saved as videos in tensorboard
+        # note: here, we collect MAX_NVIDEO rollouts, each of length MAX_VIDEO_LEN
+        train_video_paths = None
+        if self.log_video:
+            print('\nCollecting train rollouts to be used for saving videos...')
+            train_video_paths = utils.sample_n_trajectories(self.env, collect_policy, MAX_NVIDEO, MAX_VIDEO_LEN, True)
+
+        return paths, envsteps_this_batch, train_video_paths
 
     def train_agent(self):
-        # TODO: GETTHIS from HW1
+        print('\nTraining agent using sampled data from replay buffer...')
+        all_logs = []
+        for train_step in range(self.params['num_agent_train_steps_per_iter']):
+            ob_batch, ac_batch, re_batch, next_ob_batch, terminal_batch = self.agent.sample(self.params['train_batch_size'])
+            train_log = self.agent.train(ob_batch, ac_batch, re_batch, next_ob_batch, terminal_batch)
+            all_logs.append(train_log)
+        return all_logs
 
     ####################################
     ####################################
