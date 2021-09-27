@@ -91,12 +91,9 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         else:
             observation = obs[None]
 
-        observation = torch.tensor(observation).to(ptu.device)
-        if self.discrete:
-            x = self.forward(observation)
-        else:
-            dist = self.forward(observation)
-            x = dist.sample()
+        observation = torch.tensor(observation).to(ptu.device).float()
+        dist = self.forward(observation)
+        x = dist.sample()
 
         return ptu.to_numpy(x)
 
@@ -139,7 +136,7 @@ class MLPPolicyPG(MLPPolicy):
         actions = ptu.from_numpy(actions)
         advantages = ptu.from_numpy(advantages)
 
-        # TODO: update the policy using policy gradient
+        # update the policy using policy gradient
         # HINT1: Recall that the expression that we want to MAXIMIZE
             # is the expectation over collected trajectories of:
             # sum_{t=0}^{T-1} [grad [log pi(a_t|s_t) * (Q_t - b_t)]]
@@ -149,23 +146,35 @@ class MLPPolicyPG(MLPPolicy):
         # HINT4: use self.optimizer to optimize the loss. Remember to
             # 'zero_grad' first
 
-        TODO
+        self.train()
 
-        if self.nn_baseline:
-            ## TODO: update the neural network baseline using the q_values as
-            ## targets. The q_values should first be normalized to have a mean
-            ## of zero and a standard deviation of one.
+        # compute loss
+        logits = self.forward(observations)
+        loss = (-logits.log_prob(actions) * advantages).mean()
 
-            ## HINT1: use self.baseline_optimizer to optimize the loss used for
-                ## updating the baseline. Remember to 'zero_grad' first
-            ## HINT2: You will need to convert the targets into a tensor using
-                ## ptu.from_numpy before using it in the loss
-
-            TODO
+        # backprop
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
 
         train_log = {
             'Training Loss': ptu.to_numpy(loss),
         }
+
+        if self.nn_baseline:
+            targets = ptu.from_numpy(q_values)
+            targets = (targets - targets.mean()) / targets.std()
+            baseline = self.baseline(observations)
+            baseline_loss = self.baseline_loss(baseline.squeeze(), targets.squeeze())
+            
+            self.baseline_optimizer.zero_grad()
+            baseline_loss.backward()
+            self.baseline_optimizer.step()
+
+            train_log.update({'Baseline Loss': ptu.to_numpy(baseline_loss)})
+
+        self.eval()
+
         return train_log
 
     def run_baseline_prediction(self, observations):

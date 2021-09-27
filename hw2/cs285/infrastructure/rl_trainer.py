@@ -156,17 +156,17 @@ class RL_Trainer(object):
     def collect_training_trajectories(self, itr, initial_expertdata, collect_policy, batch_size):
         print("\nCollecting data to be used for training...")
         
-        if itr == 0:
-            with open(load_initial_expertdata, 'rb') as f:
-                loaded_paths = np.load(f, allow_pickle=True)
-                return loaded_paths, 0, None
+        # if itr == 0:
+        #     with open(initial_expertdata, 'rb') as f:
+        #         loaded_paths = np.load(f, allow_pickle=True)
+        #         return loaded_paths, 0, None
         
-        paths, envsteps_this_batch = utils.sample_trajectories(self.env, collect_policy, self.params['ep_len'], MAX_VIDEO_LEN)
+        paths, envsteps_this_batch = utils.sample_trajectories(self.env, collect_policy, self.params['train_batch_size'], MAX_VIDEO_LEN)
 
         # collect more rollouts with the same policy, to be saved as videos in tensorboard
         # note: here, we collect MAX_NVIDEO rollouts, each of length MAX_VIDEO_LEN
         train_video_paths = None
-        if self.log_video:
+        if self.logvideo:
             print('\nCollecting train rollouts to be used for saving videos...')
             train_video_paths = utils.sample_n_trajectories(self.env, collect_policy, MAX_NVIDEO, MAX_VIDEO_LEN, True)
 
