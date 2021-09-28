@@ -90,7 +90,6 @@ CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2
 -b 50000 -lr 0.005 -rtg --nn_baseline \
 --exp_name q4_search_b50000_lr0.005_rtg_nnbaseline
 
-
 CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2 --ep_len 150 \
 --discount 0.95 -n 100 -l 2 -s 32 \
 -b 10000 -lr 0.01 -rtg --nn_baseline \
@@ -106,7 +105,6 @@ CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2
 -b 50000 -lr 0.01 -rtg --nn_baseline \
 --exp_name q4_search_b50000_lr0.01_rtg_nnbaseline
 
-
 CUDA_VISIBLE_DEVICES=2 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2 --ep_len 150 \
 --discount 0.95 -n 100 -l 2 -s 32 \
 -b 10000 -lr 0.02 -rtg --nn_baseline \
@@ -121,6 +119,26 @@ CUDA_VISIBLE_DEVICES=2 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2
 --discount 0.95 -n 100 -l 2 -s 32 \
 -b 50000 -lr 0.02 -rtg --nn_baseline \
 --exp_name q4_search_b50000_lr0.02_rtg_nnbaseline
+
+
+# Experiment 4.1
+
+CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2 --ep_len 150 \
+--discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.02 \
+--exp_name q4_b30000_r0.02
+
+CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2 --ep_len 150 \
+--discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.02 -rtg \
+--exp_name q4_b30000_r0.02_rtg
+
+CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2 --ep_len 150 \
+--discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.02 --nn_baseline \
+--exp_name q4_b30000_r0.02_nnbaseline
+
+CUDA_VISIBLE_DEVICES=1 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v2 --ep_len 150 \
+--discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.02 -rtg --nn_baseline \
+--exp_name q4_b30000_r0.02_rtg_nnbaseline
+
 ```
 
 Experiment 5
