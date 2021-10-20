@@ -210,10 +210,10 @@ class RL_Trainer(object):
             envsteps_this_batch: the sum over the numbers of environment steps in paths
             train_video_paths: paths which also contain videos for visualization purposes
         """
-        if itr == 0:
-            with open(initial_expertdata, 'rb') as f:
-                loaded_paths = np.load(f, allow_pickle=True)
-                return loaded_paths, 0, None
+        # if itr == 0:
+        #     with open(initial_expertdata, 'rb') as f:
+        #         loaded_paths = np.load(f, allow_pickle=True)
+        #         return loaded_paths, 0, None
         
         paths, envsteps_this_batch = utils.sample_trajectories(self.env, collect_policy, self.params['train_batch_size'], MAX_VIDEO_LEN)
 
