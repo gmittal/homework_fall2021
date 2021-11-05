@@ -55,45 +55,39 @@ def mean_squared_error(a, b):
 ############################################
 
 def sample_trajectory(env, policy, max_path_length, render=False, render_mode=('rgb_array')):
-    # initialize env for the beginning of a new rollout
     ob = env.reset()
-
-    # init vars
     obs, acs, rewards, next_obs, terminals, image_obs = [], [], [], [], [], []
     steps = 0
     while True:
-
-        # render image of the simulated env
-        if render:
+        if render:  # feel free to ignore this for now
             if 'rgb_array' in render_mode:
-                if hasattr(env, 'sim'):
-                    image_obs.append(env.sim.render(camera_name='track', height=500, width=500)[::-1])
+                if hasattr(env.unwrapped, 'sim'):
+                    if 'track' in env.unwrapped.model.camera_names:
+                        image_obs.append(env.unwrapped.sim.render(camera_name='track', height=500, width=500)[::-1])
+                    else:
+                        image_obs.append(env.unwrapped.sim.render(height=500, width=500)[::-1])
                 else:
                     image_obs.append(env.render(mode=render_mode))
             if 'human' in render_mode:
                 env.render(mode=render_mode)
                 time.sleep(env.model.opt.timestep)
-
-        # use the most recent ob to decide what to do
         obs.append(ob)
-        ac = policy.get_action(ob) # HINT: query the policy's get_action function
+        ac = policy.get_action(ob)
         ac = ac[0]
         acs.append(ac)
-
-        # take that action and record results
         ob, rew, done, _ = env.step(ac)
-
-        # record result of taking that action
-        steps += 1
+        # add the observation after taking a step to next_obs
         next_obs.append(ob)
         rewards.append(rew)
-
-        rollout_done = 1 if done or len(obs) >= max_path_length else 0
-        terminals.append(rollout_done)
-
-        if rollout_done:
+        steps += 1
+        # If the episode ended, the corresponding terminal value is 1
+        # otherwise, it is 0
+        if done or steps > max_path_length:
+            terminals.append(1)
             break
-
+        else:
+            terminals.append(0)
+            
     return Path(obs, image_obs, acs, rewards, next_obs, terminals)
 
 
@@ -102,14 +96,21 @@ def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, r
         Collect rollouts using policy
         until we have collected min_timesteps_per_batch steps
     """
+    
     timesteps_this_batch = 0
     paths = []
     while timesteps_this_batch < min_timesteps_per_batch:
-        path = sample_trajectory(env, policy, max_path_length, render=render, render_mode=render_mode)
+
+        #collect rollout
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
         paths.append(path)
+
+        #count steps
         timesteps_this_batch += get_pathlength(path)
+        print('At timestep:    ', timesteps_this_batch, '/', min_timesteps_per_batch, end='\r')
 
     return paths, timesteps_this_batch
+
 
 def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False, render_mode=('rgb_array')):
     """
